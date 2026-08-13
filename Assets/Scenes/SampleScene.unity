@@ -707,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &900514242
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1019,6 +1019,10 @@ MonoBehaviour:
   jumpForce: 2.5
   impactMultiplier: 0.02
   impactReturnSpeed: 10
+  crouchHeight: 1
+  slideStartSpeed: 16
+  slideMinSpeed: 5
+  slideDecayRate: 6.5
   dashSpeed: 30
   dashDuration: 0.75
   dashCooldown: 1.5

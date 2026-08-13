@@ -149,6 +149,7 @@ public class HandScript : MonoBehaviour
 
         player.disableGravity = false;
         player.isGrappling = false;
+        player.ForceDashReset();
 
         rope.enabled = false;
 

@@ -19,6 +19,18 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float impactMultiplier = 0.02f;
     [SerializeField] float impactReturnSpeed = 10f;
 
+    [Header("Crouch & Slide Parameters")]
+    [SerializeField] private float crouchHeight = 1.0f;
+    [SerializeField] private float slideStartSpeed = 16f;
+    [SerializeField] private float slideMinSpeed = 5f;
+    [SerializeField] private float slideDecayRate = 6.5f;
+    private float originalHeight;
+    private float originalCameraY;
+    private bool isCrouched;
+    private bool isSliding;
+    private float currentSlideSpeed;
+    private Vector3 slideDirection;
+
     [Header("Dash Parameters")]
     [SerializeField] private float dashSpeed = 30f;
     [SerializeField] private float dashDuration = 0.75f;
@@ -53,6 +65,10 @@ public class PlayerScript : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
 
+        // Salva os valores originais de altura e câmera
+        originalHeight = controller.height;
+        originalCameraY = cameraTransform.localPosition.y;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -60,10 +76,18 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         MouseLook();
-        if (!isDashing)
+        
+        HandleCrouchAndSlide();
+
+        if (!isDashing && !isSliding)
         {
            Move(); 
         }
+        else if (isSliding)
+        {
+            ExecuteSlide();
+        }
+
         ApplyGravityAndJump();
         HandleDash();
         UpdateFOV();
@@ -71,15 +95,23 @@ public class PlayerScript : MonoBehaviour
 
     void LateUpdate()
     {
-        // LateUpdate for the camera landing effect.
+        // Interpolação suave para a altura da câmera ao agachar/deslizar
+        float targetCamY = isCrouched ? originalCameraY - (originalHeight - crouchHeight) * 0.5f : originalCameraY;
+        Vector3 targetCameraPosition = new Vector3(cameraTransform.localPosition.x, targetCamY, cameraTransform.localPosition.z) + cameraOffset;
+        
+        cameraTransform.localPosition = Vector3.Lerp(
+            cameraTransform.localPosition, 
+            targetCameraPosition, 
+            15f * Time.deltaTime
+        );
+
+        // Landing impact effect
         cameraOffset = Vector3.SmoothDamp(
             cameraOffset,
             Vector3.zero,
             ref cameraVelocity,
             1f / impactReturnSpeed
         );
-
-        cameraTransform.localPosition = cameraOffset;
     }
 
     void MouseLook()
@@ -100,7 +132,12 @@ public class PlayerScript : MonoBehaviour
         float x = Input.GetAxis("Horizontal"); // A/D
         float z = Input.GetAxis("Vertical");   // W/S
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Define a velocidade baseada no estado físico do jogador
+        if (isCrouched)
+        {
+            actualSpeed = speed * 0.5f; // Velocidade lenta ao andar agachado
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
         {
             actualSpeed = runSpeed;
         }
@@ -113,37 +150,134 @@ public class PlayerScript : MonoBehaviour
         controller.Move(move * actualSpeed * Time.deltaTime);
     }
 
+    void HandleCrouchAndSlide()
+    {
+        bool grounded = IsGrounded();
+
+        // Pressionou Ctrl
+        if (Input.GetKeyDown(KeyCode.LeftControl) && grounded)
+        {
+            isCrouched = true;
+            controller.height = crouchHeight;
+            controller.center = new Vector3(0, crouchHeight / 2f, 0);
+
+            // Condição para iniciar o Deslize (Slide)
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                isSliding = true;
+                currentSlideSpeed = slideStartSpeed;
+
+                // Define a direção do slide baseado no input atual ou para frente do jogador
+                Vector3 inputDir = transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical");
+                slideDirection = inputDir.magnitude > 0.1f ? inputDir.normalized : transform.forward;
+            }
+        }
+
+        // Soltou Ctrl
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            TryStandUp();
+        }
+    }
+
+    void ExecuteSlide()
+    {
+        // Move o personagem na direção travada do slide
+        controller.Move(slideDirection * currentSlideSpeed * Time.deltaTime);
+
+        // Desaceleração natural do slide ao longo do tempo
+        currentSlideSpeed -= slideDecayRate * Time.deltaTime;
+
+        // Condições de parada automática do slide
+        if (currentSlideSpeed <= slideMinSpeed || !Input.GetKey(KeyCode.LeftControl))
+        {
+            isSliding = false;
+            // Se ainda segura Ctrl, continua agachado, senão tenta levantar
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                TryStandUp();
+            }
+        }
+    }
+
+    void TryStandUp()
+    {
+        // Verifica se há teto impedindo o jogador de levantar (evita travar em locais baixos)
+        float radius = controller.radius * 0.9f;
+        Vector3 start = transform.position + Vector3.up * crouchHeight;
+        float distance = originalHeight - crouchHeight;
+
+        if (Physics.SphereCast(start, radius, Vector3.up, out RaycastHit hit, distance))
+        {
+            return; // Existe um teto acima, continua agachado
+        }
+
+        // Se o caminho estiver livre, levanta normalmente
+        isCrouched = false;
+        isSliding = false;
+        controller.height = originalHeight;
+        controller.center = new Vector3(0, originalHeight / 2f, 0);
+    }
+
+    void ForceExitCrouchAndSlide()
+    {
+        // Usado para interromper o slide imediatamente no pulo ou dash
+        isSliding = false;
+        isCrouched = false;
+        controller.height = originalHeight;
+        controller.center = new Vector3(0, originalHeight / 2f, 0);
+    }
+
+    public void ForceDashReset()
+    {
+        // Usado para resetar o Dash quando usa o Grapple.
+        dashCooldownTimer = 0f;
+    }
+
     void UpdateFOV()
-{
-    float targetFOV = normalFOV;
+    {
+        float targetFOV = normalFOV;
 
-    if (isGrappling)
-    {
-        targetFOV = grappleFOV;
-    }
-    else if (isDashing)
-    {
-        targetFOV = dashFOV;
-    }
-    else if (Input.GetKey(KeyCode.LeftShift))
-    {
-        targetFOV = runFOV;
+        if (isGrappling)
+        {
+            targetFOV = grappleFOV;
+        }
+        else if (isDashing)
+        {
+            targetFOV = dashFOV;
+        }
+        else if (isSliding)
+        {
+            targetFOV = runFOV + 5f; // FOV dinâmico levemente maior no slide
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            targetFOV = runFOV;
+        }
+
+        playerCamera.fieldOfView = Mathf.Lerp(
+            playerCamera.fieldOfView,
+            targetFOV,
+            fovSmoothSpeed * Time.deltaTime
+        );
     }
 
-    playerCamera.fieldOfView = Mathf.Lerp(
-        playerCamera.fieldOfView,
-        targetFOV,
-        fovSmoothSpeed * Time.deltaTime
-    );
-}
     void HandleDash()
     {
-        if (dashCooldownTimer > 0f)
+        // RECARGA APENAS NO CHÃO: Modificação aplicada aqui
+        if (dashCooldownTimer > 0f && IsGrounded())
+        {
             dashCooldownTimer -= Time.deltaTime;
+        }
 
         // Iniciar dash
         if (Input.GetKeyDown(KeyCode.Q) && dashCooldownTimer <= 0f && !isDashing)
         {
+            if (isSliding || isCrouched)
+            {
+                ForceExitCrouchAndSlide(); // Cancela o slide ao dar o Dash
+            }
+
             isDashing = true;
             dashTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
@@ -155,9 +289,9 @@ public class PlayerScript : MonoBehaviour
         if (isDashing)
         {
             float dashProgress = dashTimer / dashDuration;
-            float speed = dashSpeed * dashProgress;
+            float currentDashSpeed = dashSpeed * dashProgress;
 
-            controller.Move(dashDirection * speed * Time.deltaTime);
+            controller.Move(dashDirection * currentDashSpeed * Time.deltaTime);
 
             dashTimer -= Time.deltaTime;
 
@@ -179,8 +313,13 @@ public class PlayerScript : MonoBehaviour
             verticalVelocity = 0f;
         }
 
+        // Pular
         if (grounded && Input.GetKeyDown(KeyCode.Space))
         {
+            if (isSliding || isCrouched)
+            {
+                ForceExitCrouchAndSlide(); // Cancela o slide ao Pular
+            }
             verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
 
@@ -208,12 +347,6 @@ public class PlayerScript : MonoBehaviour
         float radius = controller.radius * 0.9f;
         float distance = (controller.height / 2f) + 0.3f;
 
-        /* 
-        #################################################
-        Explanation:
-        Ground Detection doesn't directly detect the ground beneath the player, but rather creates a small sphere beneath them to detect any surface below. This allows for accurate collision detection on ramps.
-        ###################################################
-        */
         return Physics.SphereCast(
             transform.position,
             radius,
