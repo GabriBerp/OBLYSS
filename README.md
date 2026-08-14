@@ -237,6 +237,17 @@ Elementos pertencentes às memórias das duas almas podem aparecer misturados, c
 
 ---
 
+# 🪟 Inspirações
+
+**OBLYSS** incrivelmente possui inspiração em diversos jogos:
+* [DOORS (Roblox)](https://www.roblox.com/pt/games/6516141723/DOORS)
+* [Grace (Roblox)](https://www.roblox.com/pt/games/138837502355157/Grace)
+* [Mirror's Edge](https://store.steampowered.com/app/17410/Mirrors_Edge/)
+* [ULTRAKILL](https://store.steampowered.com/app/1229490/ULTRAKILL/)
+* [White Knuckle](https://store.steampowered.com/app/3195790/White_Knuckle/)
+
+---
+
 # 🚧 Estado do Desenvolvimento
 
 > **OBLYSS está atualmente em desenvolvimento.**
