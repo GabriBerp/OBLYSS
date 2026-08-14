@@ -1,10 +1,15 @@
 # OBLYSS
-![Unity](https://img.shields.io/badge/unity-%23000000.svg?style=for-the-badge&logo=unity&logoColor=white)![Aseprite](https://img.shields.io/badge/Aseprite-%23FFFFFF.svg?style=for-the-badge&logo=Aseprite&logoColor=#7D929E)![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
+![Unity](https://img.shields.io/badge/unity-%23000000.svg?style=for-the-badge&logo=unity&logoColor=white) ![Aseprite](https://img.shields.io/badge/Aseprite-%23FFFFFF.svg?style=for-the-badge&logo=Aseprite&logoColor=#7D929E) ![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
 > **Two souls. One body. No identity of its own.**
 
 **OBLYSS** é um jogo 3D de **Parkour, Ação e Exploração**, construído em torno de uma pergunta simples:
 
 > **Se duas pessoas morreram acreditando em coisas completamente diferentes, o que nasce quando suas almas passam a dividir o mesmo corpo?**
+
+---
+## 🎮 Paginas do Jogo
+![Steam](https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white) ![Itch.io](https://img.shields.io/badge/Itch-%23FF0B34.svg?style=for-the-badge&logo=Itch.io&logoColor=white)</br>
+> Em breve..
 
 ---
 
