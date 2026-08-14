@@ -341,8 +341,15 @@ Este repositório busca registrar parte desse processo e permitir que outras pes
 
 No momento, **OBLYSS** é um projeto pessoal em desenvolvimento.
 Sugestões, ideias, discussões e observações são bem-vindas.
-Caso o projeto futuramente abra espaço para contribuições diretas, esta seção será atualizada.
+Se você quiser ajudar com os custos de desenvolvimento, equipamentos,
+software ou outros recursos necessários para o projeto, qualquer contribuição
+é bem-vinda.
 
+### ☕ Apoiar o projeto
+
+**Pix Copia e Cola:**
+`00020101021126330014br.gov.bcb.pix0111134820264595204000053039865802BR5923GABRIEL BEZERRA PEREIRA6006RECIFE62070503***630480A1`
+> Qualquer valor ajuda, de verdade mesmo.
 ---
 
 # 🜏 OBLYSS
