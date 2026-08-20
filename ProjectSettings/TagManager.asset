@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - GrapTarget
+  - GrapEnemy
   layers:
   - Default
   - TransparentFX

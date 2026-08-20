@@ -119,7 +119,7 @@ public class HandScript : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, ropeMaxDistance))
         {
-            if (hit.collider.CompareTag("GrapTarget"))
+            if (hit.collider.CompareTag("GrapTarget") || hit.collider.CompareTag("GrapEnemy"))
             {
                 grapplePoint = hit.point;
                 ropeEnd = grapplePoint;
