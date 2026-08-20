@@ -28,8 +28,12 @@ public class HandScript : MonoBehaviour
     [Header("Rope Origin")]
     public Transform ropeOrigin;
 
+    [Header("Mesh Settings")]
+    public MeshRenderer mesh;
+
     void Start()
     {
+        mesh.enabled = false;
         rope.positionCount = 2;
         rope.enabled = false;
         rope.numCornerVertices = 5;
@@ -77,6 +81,7 @@ public class HandScript : MonoBehaviour
 
     void ShootRope()
     {
+        mesh.enabled = true;
         ropeFlying = true;
         rope.enabled = true;
 
@@ -106,6 +111,7 @@ public class HandScript : MonoBehaviour
         {
             ropeFlying = false;
             rope.enabled = false;
+            mesh.enabled = false;
             return;
         }
 
@@ -152,6 +158,7 @@ public class HandScript : MonoBehaviour
         player.ForceDashReset();
 
         rope.enabled = false;
+        mesh.enabled = false;
 
         StartCoroutine(Repel(direction));
     }
