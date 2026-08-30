@@ -8,7 +8,7 @@ public class HandScript : MonoBehaviour
 
     [Header("Player Parameters")]
     public PlayerScript player;
-    public CharacterController controller;
+    public Rigidbody playerRigidbody;
 
     [Header("Grapple Settings")]
     public float maxDistance = 30f;
@@ -18,10 +18,13 @@ public class HandScript : MonoBehaviour
 
     [Header("Rope Settings")]
     public LineRenderer rope;
-    bool ropeFlying;
-    Vector3 ropeEnd;
-    float ropeSpeed = 60f;
-    float ropeMaxDistance = 30f;
+
+    private bool ropeFlying;
+    private Vector3 ropeEnd;
+
+    [SerializeField] private float ropeSpeed = 60f;
+    [SerializeField] private float ropeMaxDistance = 30f;
+
     private bool isGrappling;
     private Vector3 grapplePoint;
 
@@ -31,14 +34,44 @@ public class HandScript : MonoBehaviour
     [Header("Mesh Settings")]
     public MeshRenderer mesh;
 
+    // =========================================================
+    // NOVO: direção/origem travadas no instante do disparo,
+    // para que mover a câmera depois NÃO afete a mira da corda.
+    // =========================================================
+    private Vector3 shootOrigin;
+    private Vector3 shootDirection;
+
+    // Resultado do raycast feito no exato instante do disparo.
+    private bool pendingHit;
+    private Vector3 pendingHitPoint;
+    private float pendingHitDistance;
+
+    // =========================================================
+    // NOVO: referência ao alvo atingido (parede/inimigo) e o
+    // offset local do ponto de impacto nele, para a corda
+    // acompanhar o alvo caso ele se mova.
+    // =========================================================
+    private Transform hitTransform;
+    private Vector3 localHitOffset;
+
+
     void Start()
     {
         mesh.enabled = false;
+
         rope.positionCount = 2;
         rope.enabled = false;
+
         rope.numCornerVertices = 5;
         rope.numCapVertices = 5;
+
+        // Caso o Rigidbody não tenha sido colocado manualmente no Inspector
+        if (playerRigidbody == null && player != null)
+        {
+            playerRigidbody = player.GetComponent<Rigidbody>();
+        }
     }
+
 
     void Update()
     {
@@ -52,32 +85,29 @@ public class HandScript : MonoBehaviour
             UpdateRopeFlight();
         }
 
+        // Mantém o ponto de gancho colado no alvo (se ele se mover)
+        // também no Update, para o desenho da corda ficar suave.
         if (isGrappling)
         {
-            PullPlayer();
+            UpdateGrapplePointFromTarget();
         }
 
         UpdateRope();
     }
 
-    void TryGrapple()
+
+    void FixedUpdate()
     {
-        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
+        if (isGrappling)
         {
-            if (hit.collider.CompareTag("GrapTarget"))
-            {
-                grapplePoint = hit.point;
-                isGrappling = true;
-
-                player.disableGravity = true;
-                player.isGrappling = true;
-
-                rope.positionCount = 2;
-            }
+            PullPlayer();
         }
     }
+
+
+    // =========================================================
+    // DISPARO DO GANCHO
+    // =========================================================
 
     void ShootRope()
     {
@@ -85,93 +115,259 @@ public class HandScript : MonoBehaviour
         ropeFlying = true;
         rope.enabled = true;
 
-        ropeEnd = ropeOrigin.position;
-    }
+        // Trava origem e direção no momento exato do clique.
+        // A partir daqui, mover a câmera não muda mais a mira.
+        shootOrigin = ropeOrigin.position;
+        shootDirection = ropeOrigin.forward;
 
-    void PullPlayer()
-    {
-        Vector3 direction = (grapplePoint - controller.transform.position);
-        float distance = direction.magnitude;
+        ropeEnd = shootOrigin;
 
-        direction.Normalize();
+        pendingHit = false;
+        hitTransform = null;
 
-        controller.Move(direction * pullSpeed * Time.deltaTime);
-
-        if (distance < stopDistance)
-        {
-            StopGrapple(direction);
-        }
-    }
-
-    void UpdateRopeFlight()
-    {
-        ropeEnd += ropeOrigin.forward * ropeSpeed * Time.deltaTime;
-
-        if (Vector3.Distance(ropeOrigin.position, ropeEnd) > ropeMaxDistance)
-        {
-            ropeFlying = false;
-            rope.enabled = false;
-            mesh.enabled = false;
-            return;
-        }
-
-        Ray ray = new Ray(ropeOrigin.position, ropeOrigin.forward);
+        // O acerto (ou erro) é decidido AGORA, com base na mira
+        // no instante do disparo — não a cada frame do voo.
+        Ray ray = new Ray(shootOrigin, shootDirection);
 
         if (Physics.Raycast(ray, out RaycastHit hit, ropeMaxDistance))
         {
-            if (hit.collider.CompareTag("GrapTarget") || hit.collider.CompareTag("GrapEnemy"))
+            if (
+                hit.collider.CompareTag("GrapTarget") ||
+                hit.collider.CompareTag("GrapEnemy")
+            )
             {
-                grapplePoint = hit.point;
-                ropeEnd = grapplePoint;
+                pendingHit = true;
+                pendingHitPoint = hit.point;
+                pendingHitDistance = hit.distance;
 
-                ropeFlying = false;
-                StartGrapple();
+                // Guarda o alvo e o ponto de impacto relativo a ele,
+                // para a corda seguir o alvo se ele se mover.
+                hitTransform = hit.collider.transform;
+                localHitOffset = hitTransform.InverseTransformPoint(hit.point);
             }
         }
     }
 
-    void UpdateRope()
+
+    // =========================================================
+    // VOO DA CORDA
+    // Agora é só a animação visual indo até o ponto já decidido
+    // no disparo (shootOrigin / shootDirection fixos).
+    // =========================================================
+
+    void UpdateRopeFlight()
     {
-        if (!rope.enabled) return;
+        ropeEnd += shootDirection * ropeSpeed * Time.deltaTime;
 
-        rope.SetPosition(0, ropeOrigin.position);
+        float traveled = Vector3.Distance(shootOrigin, ropeEnd);
 
-        if (ropeFlying)
-            rope.SetPosition(1, ropeEnd);
-        else
-            rope.SetPosition(1, grapplePoint);
+        if (pendingHit)
+        {
+            if (traveled >= pendingHitDistance)
+            {
+                ropeEnd = pendingHitPoint;
+                grapplePoint = pendingHitPoint;
+
+                ropeFlying = false;
+
+                StartGrapple();
+            }
+
+            return;
+        }
+
+        if (traveled > ropeMaxDistance)
+        {
+            ropeFlying = false;
+            rope.enabled = false;
+            mesh.enabled = false;
+        }
     }
+
+
+    // =========================================================
+    // INICIAR GRAPPLE
+    // =========================================================
 
     void StartGrapple()
     {
+        if (playerRigidbody == null)
+        {
+            Debug.LogError(
+                "HandScript: Rigidbody do jogador não foi encontrado."
+            );
+
+            return;
+        }
+
         isGrappling = true;
 
-        player.disableGravity = true;
         player.isGrappling = true;
+
+        // Já avisa a câmera pra travar na direção do gancho
+        // desde o primeiro frame do puxão.
+        Vector3 initialDirection = grapplePoint - playerRigidbody.position;
+        player.SetGrappleDirection(initialDirection);
+
+        // =====================================================
+        // DESATIVA TEMPORARIAMENTE A GRAVIDADE
+        // =====================================================
+
+        playerRigidbody.useGravity = false;
+
+        // Remove qualquer movimento anterior
+        // para o jogador não continuar andando/pulando
+        playerRigidbody.linearVelocity = Vector3.zero;
+
+        // Remove também qualquer rotação acumulada
+        playerRigidbody.angularVelocity = Vector3.zero;
     }
+
+
+    // =========================================================
+    // PUXAR JOGADOR
+    // =========================================================
+
+    void PullPlayer()
+    {
+        if (playerRigidbody == null)
+            return;
+
+        // Atualiza o ponto de gancho caso o alvo (ex: inimigo) tenha se movido.
+        UpdateGrapplePointFromTarget();
+
+        Vector3 direction =
+            grapplePoint -
+            playerRigidbody.position;
+
+        float distance =
+            direction.magnitude;
+
+        if (distance <= stopDistance)
+        {
+            StopGrapple(direction.normalized);
+            return;
+        }
+
+        direction.Normalize();
+
+        // Avisa a câmera do jogador para onde olhar durante o puxão.
+        player.SetGrappleDirection(direction);
+
+        // =====================================================
+        // O Rigidbody agora controla o movimento.
+        //
+        // Não usamos mais:
+        //
+        // controller.Move(...)
+        //
+        // =====================================================
+
+        playerRigidbody.linearVelocity =
+            direction * pullSpeed;
+    }
+
+
+    // =========================================================
+    // ACOMPANHAR O ALVO (parede fixa ou inimigo que se move)
+    // =========================================================
+
+    void UpdateGrapplePointFromTarget()
+    {
+        if (hitTransform != null)
+        {
+            grapplePoint = hitTransform.TransformPoint(localHitOffset);
+        }
+    }
+
+
+    // =========================================================
+    // FINALIZAR GRAPPLE
+    // =========================================================
+
     void StopGrapple(Vector3 direction)
     {
         isGrappling = false;
 
-        player.disableGravity = false;
+        // Para completamente o movimento do grapple
+        playerRigidbody.linearVelocity = Vector3.zero;
+
+        // =====================================================
+        // DEVOLVE A GRAVIDADE
+        // =====================================================
+
+        playerRigidbody.useGravity = true;
+
         player.isGrappling = false;
+
         player.ForceDashReset();
 
         rope.enabled = false;
         mesh.enabled = false;
 
-        StartCoroutine(Repel(direction));
+        hitTransform = null;
+
+        StartCoroutine(
+            Repel(direction)
+        );
     }
+
+
+    // =========================================================
+    // RECUO APÓS O GRAPPLE
+    // =========================================================
 
     IEnumerator Repel(Vector3 direction)
     {
-        float timer = 0.2f;
+        float timer = 0.08f;
 
-        while (timer > 0)
+        while (timer > 0f)
         {
-            controller.Move(-direction * repelForce * Time.deltaTime);
-            timer -= Time.deltaTime;
-            yield return null;
+            if (playerRigidbody != null)
+            {
+                Vector3 repelDirection =
+                    -direction;
+
+                playerRigidbody.AddForce(
+                    repelDirection * repelForce,
+                    ForceMode.VelocityChange
+                );
+            }
+
+            timer -= Time.fixedDeltaTime;
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+
+    // =========================================================
+    // CORDA
+    // =========================================================
+
+    void UpdateRope()
+    {
+        if (!rope.enabled)
+            return;
+
+        rope.SetPosition(
+            0,
+            ropeOrigin.position
+        );
+
+        if (ropeFlying)
+        {
+            rope.SetPosition(
+                1,
+                ropeEnd
+            );
+        }
+        else
+        {
+            rope.SetPosition(
+                1,
+                grapplePoint
+            );
         }
     }
 }
