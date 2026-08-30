@@ -1,4 +1,0 @@
-repository "OBLYSS/OBLYSS@4674065770879@cloud"
-  path "/"
-    br "/main"
-    co "/main"
