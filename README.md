@@ -131,6 +131,7 @@ O jogador não deve apenas atravessar o cenário.
 ### Gancho
 
 O jogador pode utilizar um **gancho** para se lançar em direção a plataformas e pontos específicos do cenário.
+Quando o jogador chega ao alvo no qual o gancho foi utilizado, o mesmo ganha a possibilidade de reutilizar o dash no ar, caso ja tenha usado o mesmo.
 O gancho é uma das principais ferramentas de movimentação e pode ser utilizado para:
 * alcançar plataformas distantes;
 * mudar rapidamente de direção;
@@ -141,24 +142,34 @@ O gancho é uma das principais ferramentas de movimentação e pode ser utilizad
 ### Dash
 Um **Dash** permite realizar movimentos rápidos e corrigir a trajetória durante o percurso.
 Ele pode ser combinado com outras mecânicas para criar sequências de movimentação mais complexas.
+O Dash para ser utilizado novamente, necessita que o jogador encoste no chão pelo menos 1 vez após ter usado o dash, para poder usar ele novamente.
+Outras mecânicas permitem utilizar o dash novamente mesmo que esteja no ar, o cria novas possibilidades de movimentos.
 
 ### Corrida
 Uma mecânica simples de corrida permite aumentar a velocidade de deslocamento do personagem.
 Apesar de simples, ela serve como base para manter o ritmo do Parkour.
+
+### Agachar
+Outra mecânica de certa forma simples, permite com que o jogador se abaixe, podendo passar em locais menores, ao custo de se mover mais devagar.
+Ela por si só não é uma mecânica que foi planejada pra ser usada sozinha, mas sim para ser usada em conjunto com outras mecânicas.
+
+### Deslizar
+Uma espécie de **Dash**, mas que permite o jogador passar por locais menores, de forma mais rápida e ágil, ao custo de não poder ser usado no ar.
+Deslizar permite você ir bem mais longe do que um **Dash** permitiria, mas em troca você perde velocidade se deslizar por muito tempo
 
 ---
 
 # 🔮 Mecânicas planejadas
 
 Algumas mecânicas ainda estão em fase de planejamento e podem ser adicionadas futuramente.
-### Agachar
-Uma mecânica de agachamento permitiria atravessar determinados espaços e criar novas possibilidades de movimentação.
-### Deslizar
-O agachamento poderia ser combinado com corrida para criar uma mecânica de **slide**, permitindo atravessar obstáculos mantendo o fluxo da movimentação.
 ### Combate com Gancho
-Alguns inimigos poderiam exigir mais do que simplesmente desviar.
-O jogador poderia utilizar o gancho diretamente contra eles, mas o ataque dependeria de **timing preciso**.
+O jogador poderia utilizar o gancho para eliminar inimigos específicos, mas o ataque dependeria de **timing preciso**.
 Acertar o momento correto poderia permitir destruir o inimigo ou utilizar sua presença como parte da própria movimentação.
+### Combate com Dash
+O jogador poderia utilizar o dash para eliminar inimigos específicos, ao realizar um dash na direção desses inimigos, iriam servir como pequenos propulsores, permitindo o uso de um dash adicional mesmo que esteja no ar.
+### Cristais de Save.
+Como a ideia é que o jogo tenha de certa forma "fases" ou "marcos", aonde a cada "marco" mais inimigos diferentes e mais difícil iria ficando o jogo, precisaria de uma forma de definir aonde que você chega nesses "marcos", e a ideia seriam Cristais, que ao colidir com eles, eles travariam o tempo, assim marcando que você alcançou o marco, aonde você seria levado para uma pequena sala mais tranquila, aonde poderia dar uma pausa pra tomar uma agua, e depois quando estivesse pronto, continuar a jornada.
+Essas "áreas de descanso" seriam altamente usadas para desenvolver a interação entre as duas Almas e a Entidade, então espere encontrar alguns diálogos e conversas durante essas áreas, mesmo que outros diálogos podem aparecer durante as próprias "fases".
 
 ---
 
@@ -284,8 +295,8 @@ O projeto ainda está sujeito a mudanças em suas mecânicas, narrativa, estéti
 
 ### Fase II — Parkour
 
-* [ ] Agachamento
-* [ ] Slide
+* [x] Agachamento
+* [x] Slide
 * [ ] Melhorar movimentação aérea
 * [ ] Criar sistemas de interação com o cenário
 * [ ] Criar fases focadas em velocidade
