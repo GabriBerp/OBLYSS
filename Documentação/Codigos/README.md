@@ -7,8 +7,8 @@
 
 Aqui você pode encontrar algumas coisas que eu resolvi compartilhar com relação aos **Codigos** utilizados nesse projeto.
 ### Topicos:
-* Movimentação
-* Dash
+* [Movimentação](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Codigos#-movimentação)
+* [Dash](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Codigos#-dash)
 * Deslizar
 * Gancho
 
