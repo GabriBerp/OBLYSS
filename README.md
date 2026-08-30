@@ -253,7 +253,6 @@ Elementos pertencentes às memórias das duas almas podem aparecer misturados, c
 **OBLYSS** incrivelmente possui inspiração em diversos jogos:
 * [DOORS (Roblox)](https://www.roblox.com/pt/games/6516141723/DOORS)
 * [Grace (Roblox)](https://www.roblox.com/pt/games/138837502355157/Grace)
-* [Mirror's Edge](https://store.steampowered.com/app/17410/Mirrors_Edge/)
 * [ULTRAKILL](https://store.steampowered.com/app/1229490/ULTRAKILL/)
 * [White Knuckle](https://store.steampowered.com/app/3195790/White_Knuckle/)
 
@@ -327,8 +326,7 @@ O projeto ainda está sujeito a mudanças em suas mecânicas, narrativa, estéti
 
 # 📁 Sobre este repositório
 
-Este repositório contém os arquivos utilizados no desenvolvimento de **OBLYSS**.
-O objetivo não é apenas armazenar o projeto, mas também permitir que outras pessoas interessadas em desenvolvimento de jogos possam **estudar como diferentes sistemas foram construídos**.
+O objetivo não é apenas informar sobre o projeto, mas também permitir que outras pessoas interessadas em desenvolvimento de jogos possam **estudar como diferentes sistemas foram construídos**.
 Você pode encontrar aqui arquivos relacionados a:
 * programação;
 * movimentação;
