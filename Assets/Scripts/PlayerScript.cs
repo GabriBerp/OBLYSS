@@ -51,7 +51,10 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Grappling Parameters")]
     [HideInInspector] public bool isGrappling;
-
+    [Header("Repel / Knockback")]
+    [Tooltip("Tempo em que o Move() não sobrescreve a velocidade horizontal, para o impulso do repel não ser apagado no próximo FixedUpdate.")]
+    [SerializeField] private float repelControlLockDuration = 0.2f;
+    private float repelLockTimer = 0f;
     [Header("Camera Parameters")]
     public Transform cameraTransform;
     private Vector3 cameraOffset;
@@ -142,7 +145,10 @@ public class PlayerScript : MonoBehaviour
         if (rb == null)
             return;
 
-        if (!isDashing && !isSliding)
+        if (repelLockTimer > 0f)
+            repelLockTimer -= Time.fixedDeltaTime;
+
+        if (!isDashing && !isSliding && repelLockTimer <= 0f)
         {
             Move();
         }
@@ -155,7 +161,6 @@ public class PlayerScript : MonoBehaviour
 
         UpdateGroundState();
     }
-
 
     void LateUpdate()
     {
@@ -320,6 +325,16 @@ public class PlayerScript : MonoBehaviour
             rb.linearVelocity.y,
             targetVelocity.z
         );
+    }
+
+    /// <summary>
+    /// Chamado pelo HandScript logo após aplicar um impulso externo (repel),
+    /// para o Move() não sobrescrever a velocidade no próximo tick.
+    /// </summary>
+    public void LockMovementControl(float duration = -1f)
+    {
+        float d = duration > 0f ? duration : repelControlLockDuration;
+        repelLockTimer = Mathf.Max(repelLockTimer, d);
     }
 
 

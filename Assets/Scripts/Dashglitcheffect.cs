@@ -1,7 +1,9 @@
 using UnityEngine;
 using Kino;
 
-[RequireComponent(typeof(DigitalGlitch))]
+// Anexe este script no mesmo GameObject que tem o componente AnalogGlitch
+// (normalmente a câmera do jogador).
+[RequireComponent(typeof(AnalogGlitch))]
 public class DashGlitchEffect : MonoBehaviour
 {
     [Header("Referências")]
@@ -9,11 +11,21 @@ public class DashGlitchEffect : MonoBehaviour
     [SerializeField] private PlayerScript player;
 
     [Header("Configuração do Glitch")]
-    [Tooltip("Intensidade máxima do glitch durante o dash (0 a 1).")]
+    [Tooltip("Intensidade base do glitch durante o dash (0 a 1). Cada campo abaixo usa uma fração dela.")]
     [SerializeField, Range(0f, 1f)] private float maxIntensity = 0.6f;
 
     [Tooltip("Velocidade com que a intensidade sobe/desce (maior = mais rápido).")]
     [SerializeField] private float smoothSpeed = 12f;
+
+    [Header("Peso de cada efeito (multiplicadores sobre a intensidade base)")]
+    [Tooltip("Deslocamento horizontal suave. É o efeito principal do dash.")]
+    [SerializeField, Range(0f, 1f)] private float horizontalShakeWeight = 0.3f;
+
+    [Tooltip("Tremor/corte nas linhas horizontais. Use um valor baixo para só dar textura.")]
+    [SerializeField, Range(0f, 1f)] private float scanLineJitterWeight = 0.8f;
+
+    [Tooltip("Separação cromática (RGB desalinhado). Use um valor baixo, fica forte rápido.")]
+    [SerializeField, Range(0f, 1f)] private float colorDriftWeight = 0.5f;
 
     [Tooltip("Se true, a intensidade some suavemente depois do dash em vez de cortar na hora.")]
     [SerializeField] private bool fadeOutAfterDash = true;
@@ -21,18 +33,18 @@ public class DashGlitchEffect : MonoBehaviour
     [Tooltip("Duração do fade-out após o dash terminar (em segundos).")]
     [SerializeField] private float fadeOutDuration = 0.15f;
 
-    private DigitalGlitch digitalGlitch;
+    private AnalogGlitch analogGlitch;
     private float fadeOutTimer;
     private bool wasDashing;
 
     void Awake()
     {
-        digitalGlitch = GetComponent<DigitalGlitch>();
+        analogGlitch = GetComponent<AnalogGlitch>();
     }
 
     void Update()
     {
-        if (player == null || digitalGlitch == null)
+        if (player == null || analogGlitch == null)
             return;
 
         bool isDashing = player.IsDashing;
@@ -61,10 +73,24 @@ public class DashGlitchEffect : MonoBehaviour
             targetIntensity = 0f;
         }
 
-        digitalGlitch.intensity = Mathf.Lerp(
-            digitalGlitch.intensity,
-            targetIntensity,
-            smoothSpeed * Time.deltaTime
+        float t = smoothSpeed * Time.deltaTime;
+
+        analogGlitch.horizontalShake = Mathf.Lerp(
+            analogGlitch.horizontalShake,
+            targetIntensity * horizontalShakeWeight,
+            t
+        );
+
+        analogGlitch.scanLineJitter = Mathf.Lerp(
+            analogGlitch.scanLineJitter,
+            targetIntensity * scanLineJitterWeight,
+            t
+        );
+
+        analogGlitch.colorDrift = Mathf.Lerp(
+            analogGlitch.colorDrift,
+            targetIntensity * colorDriftWeight,
+            t
         );
 
         wasDashing = isDashing;

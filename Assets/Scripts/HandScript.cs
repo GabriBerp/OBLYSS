@@ -14,7 +14,20 @@ public class HandScript : MonoBehaviour
     public float maxDistance = 30f;
     public float pullSpeed = 25f;
     public float stopDistance = 2f;
-    public float repelForce = 8f;
+    [Header("Repel Settings")]
+    [SerializeField] private float repelForce = 12f;
+    [SerializeField] private float repelUpwardBoost = 5f;
+    [SerializeField] private float repelMinUpward = 1.5f;
+    [SerializeField] private float upwardTargetThreshold = 0.15f;
+
+
+    private enum TargetType
+    {
+        GrapEnemy,
+        GrapWall
+    }
+
+    private TargetType target;
 
     [Header("Rope Settings")]
     public LineRenderer rope;
@@ -34,25 +47,15 @@ public class HandScript : MonoBehaviour
     [Header("Mesh Settings")]
     public MeshRenderer mesh;
 
-    // =========================================================
-    // NOVO: direção/origem travadas no instante do disparo,
-    // para que mover a câmera depois NÃO afete a mira da corda.
-    // =========================================================
     private Vector3 shootOrigin;
     private Vector3 shootDirection;
 
-    // Resultado do raycast feito no exato instante do disparo.
     private bool pendingHit;
     private Vector3 pendingHitPoint;
     private float pendingHitDistance;
-
-    // =========================================================
-    // NOVO: referência ao alvo atingido (parede/inimigo) e o
-    // offset local do ponto de impacto nele, para a corda
-    // acompanhar o alvo caso ele se mova.
-    // =========================================================
     private Transform hitTransform;
     private Vector3 localHitOffset;
+    
 
 
     void Start()
@@ -139,6 +142,8 @@ public class HandScript : MonoBehaviour
                 pendingHit = true;
                 pendingHitPoint = hit.point;
                 pendingHitDistance = hit.distance;
+
+                target = hit.collider.CompareTag("GrapEnemy") ? TargetType.GrapEnemy : TargetType.GrapWall;
 
                 // Guarda o alvo e o ponto de impacto relativo a ele,
                 // para a corda seguir o alvo se ele se mover.
@@ -307,9 +312,7 @@ public class HandScript : MonoBehaviour
 
         hitTransform = null;
 
-        StartCoroutine(
-            Repel(direction)
-        );
+        ApplyRepel(direction);
     }
 
 
@@ -317,27 +320,28 @@ public class HandScript : MonoBehaviour
     // RECUO APÓS O GRAPPLE
     // =========================================================
 
-    IEnumerator Repel(Vector3 direction)
+    private void ApplyRepel(Vector3 travelDirection)
     {
-        float timer = 0.08f;
+        if (playerRigidbody == null) return;
 
-        while (timer > 0f)
-        {
-            if (playerRigidbody != null)
-            {
-                Vector3 repelDirection =
-                    -direction;
+        Vector3 flatBack = new Vector3(-travelDirection.x, 0f, -travelDirection.z);
+        if (flatBack.sqrMagnitude < 0.0001f)
+            flatBack = -playerRigidbody.transform.forward;
 
-                playerRigidbody.AddForce(
-                    repelDirection * repelForce,
-                    ForceMode.VelocityChange
-                );
-            }
+        flatBack.Normalize();
 
-            timer -= Time.fixedDeltaTime;
+        float verticalAmount = travelDirection.y > upwardTargetThreshold
+            ? repelUpwardBoost
+            : repelMinUpward;
 
-            yield return new WaitForFixedUpdate();
-        }
+        Vector3 finalImpulse = flatBack * repelForce + Vector3.up * verticalAmount;
+
+        Vector3 currentVel = playerRigidbody.linearVelocity;
+        playerRigidbody.linearVelocity = new Vector3(0f, currentVel.y, 0f);
+
+        playerRigidbody.AddForce(finalImpulse, ForceMode.VelocityChange);
+
+        player.LockMovementControl();
     }
 
 
