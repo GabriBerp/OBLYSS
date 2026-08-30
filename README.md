@@ -12,6 +12,16 @@
 > Em breve..
 
 ---
+## 📁 Documentação
+Caso tenha interesse, esse repositório tem como objetivo servir para guardar algumas documentações minhas sobre o desenvolvimento do projeto, adicionando alguns comentarios meus, e até ensinando como foi todo o processo da criação do jogo.
+### 🗄️ Registros
+* [Documentação](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação)
+  * [Documentação sobre Cenarios](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Cenarios)
+  * [Documentação sobre Codigos](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Codigos)
+  * [Documentação sobre Level Design](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Level%20Design)
+  * [Documentação sobre Character Design](https://github.com/GabriBerp/OBLYSS/tree/main/Documentação/Character%20Design)
+
+---
 
 ## ⬛ Sobre o jogo
 
@@ -321,39 +331,6 @@ O projeto ainda está sujeito a mudanças em suas mecânicas, narrativa, estéti
 * [ ] Integrar memórias ao cenário
 * [ ] Criar progressão das fases
 * [ ] Criar conclusão narrativa
-
----
-
-# 📁 Sobre este repositório
-
-O objetivo não é apenas informar sobre o projeto, mas também permitir que outras pessoas interessadas em desenvolvimento de jogos possam **estudar como diferentes sistemas foram construídos**.
-Você pode encontrar aqui arquivos relacionados a:
-* programação;
-* movimentação;
-* Parkour;
-* sistemas de gameplay;
-* protótipos;
-* ferramentas;
-* experimentos;
-* documentação;
-* conceitos;
-* desenvolvimento das mecânicas.
-
-Se alguma mecânica do projeto despertar sua curiosidade, você pode explorar sua implementação e entender como ela funciona.
-
-> **OBLYSS também é um projeto de estudo.**
-
----
-
-# 🧪 Por que tornar o código público?
-
-O desenvolvimento de um jogo envolve muitos experimentos.
-Nem tudo que existe neste repositório necessariamente fará parte da versão final do jogo.
-Algumas ideias podem ser descartadas.
-Algumas mecânicas podem ser refeitas.
-Alguns sistemas podem existir apenas para testar uma hipótese.
-Isso faz parte do desenvolvimento.
-Este repositório busca registrar parte desse processo e permitir que outras pessoas aprendam com ele.
 
 ---
 
