@@ -4,7 +4,36 @@
 
 ---
 ## 🎨 Character Design
+
+### Topicos:
+* **Personagens Principais:**
+  * A Entidade
+  * A Alma da Corrupção
+  * A Alma do Conhecimento
+* **Inimigos:**
+  * Placeholder
+* **NPCs:**
+  * Placeholder
+
+---
+## Personagens Principais
+### 🜏 A Entidade
 WIP
+### 💜 A Alma da Corrupção
+WIP
+### 💛 A Alma do Conhecimento
+WIP
+
+---
+## Inimigos
+### ❔ PLACEHOLDER
+WIP
+
+---
+## NPCs
+### ❔ PLACEHOLDER
+WIP
+
 ---
 
 **OBLYSS — Ascend. Remember. Become.**
