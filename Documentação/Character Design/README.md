@@ -231,8 +231,8 @@ WIP
 * **Inspirações:** Torvo(Hexatombe); Harley Sawyer(PoppyPlaytime)
 * **Altura:** 1,75
 * **Porte/Proporções:** Visivelmente não é alguem forte, mas tambem não parece fraco.
-* **Características Marcantes:** Não possui o olho esquerdo, parece ter sido arrancado a força por algo, seu braço esquerdo tambem foi arrancado, mas esse parece que foi cortado fora de forma desesperada e agressiva
-* **Roupas:**
+* **Características Marcantes:** Não possui o olho esquerdo, parece ter sido arrancado a força por algo, seu braço esquerdo tambem foi arrancado, mas esse parece que foi cortado fora de forma desesperada e agressiva, o mesmo esta preso em uma especie de cruz de metal, com arame farpado ao redor do seu braço direito, dos seus tornozelos e da sua cintura;
+* **Roupas:** Utiliza vestimentas mais goticas e antigas, porém completamente sujas e marcadas pelo tempo.
 * **Acessórios:**
 * **Cabelo:**
 * **Olhos:**

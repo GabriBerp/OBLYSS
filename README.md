@@ -167,6 +167,12 @@ Ela por si só não é uma mecânica que foi planejada pra ser usada sozinha, ma
 Uma espécie de **Dash**, mas que permite o jogador passar por locais menores, de forma mais rápida e ágil, ao custo de não poder ser usado no ar.
 Deslizar permite você ir bem mais longe do que um **Dash** permitiria, mas em troca você perde velocidade se deslizar por muito tempo
 
+### Hyperdash
+Uma versão do **Dash** mais poderosa, e mais forte, aao **Agachar no Ar** cria uma janela de **0,5s** aonde a gravidade do jogador é **desativada**, ao tentar utilizar um **Dash** nessa janela (independente se possuir ou não o **Dash**), vai realizar um **Hyperdash**, que vai mais longe e mais rapido, mas so pode ser usado uma vez enquanto estiver no ar, caso ja tenha usado o **Ground Pound** não podera usar o **Hyperdash**.
+
+### Ground Pound
+Uma forma de descer rapidamente, ao **Agachar no Ar** cria uma janela de **0,5s** aonde a gravidade do jogador é **desativada**, ao tentar **Pular** nesse estado, vai dar uma especie de **Dash** para baixo, mesmo que não esteja olhando para baixo, porém esse "dash" é mais curto, porém mais forte, no fim dele, independente se atingir ou não o chão, você recupera o uso do **Dash** caso não tenha. Essa mecânica so pode ser usada uma vez enquanto estiver no ar, caso ja tenha usado o **Hyperdash** não podera usar o **Ground Pound**.
+
 ---
 
 # 🔮 Mecânicas planejadas
@@ -175,8 +181,11 @@ Algumas mecânicas ainda estão em fase de planejamento e podem ser adicionadas 
 ### Combate com Gancho
 O jogador poderia utilizar o gancho para eliminar inimigos específicos, mas o ataque dependeria de **timing preciso**.
 Acertar o momento correto poderia permitir destruir o inimigo ou utilizar sua presença como parte da própria movimentação.
-### Combate com Dash
-O jogador poderia utilizar o dash para eliminar inimigos específicos, ao realizar um dash na direção desses inimigos, iriam servir como pequenos propulsores, permitindo o uso de um dash adicional mesmo que esteja no ar.
+### Combate com Dash / Hyperdash
+O jogador poderia utilizar o dash ou o Hyperdash para eliminar inimigos específicos, ao realizar um dash/hyperdash na direção desses inimigos, iriam servir como pequenos propulsores, permitindo o uso de um dash adicional mesmo que esteja no ar.
+### Combate com Ground Pound
+O jogador poderia utilizar o ground pound para eliminar inimigos específicos, ao realizar um ground pound em cima de um desses inimigos, eles iriam ser destruidos, e o jogador seria repelido pra cima, e como todos os outros combates, iria garantir um uso extra de dash caso ja tenha utilizado ele.
+
 ### Cristais de Save.
 Como a ideia é que o jogo tenha de certa forma "fases" ou "marcos", aonde a cada "marco" mais inimigos diferentes e mais difícil iria ficando o jogo, precisaria de uma forma de definir aonde que você chega nesses "marcos", e a ideia seriam Cristais, que ao colidir com eles, eles travariam o tempo, assim marcando que você alcançou o marco, aonde você seria levado para uma pequena sala mais tranquila, aonde poderia dar uma pausa pra tomar uma agua, e depois quando estivesse pronto, continuar a jornada.
 Essas "áreas de descanso" seriam altamente usadas para desenvolver a interação entre as duas Almas e a Entidade, então espere encontrar alguns diálogos e conversas durante essas áreas, mesmo que outros diálogos podem aparecer durante as próprias "fases".
