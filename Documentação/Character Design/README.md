@@ -161,6 +161,8 @@
 
   #### Moodboard
 
+  ![alt](https://github.com/GabriBerp/OBLYSS/blob/main/Documenta%C3%A7%C3%A3o/Character%20Design/Personagens_Principais/Corrup%C3%A7%C3%A3o/Moodboard.png)
+
   #### Rascunhos
 
   #### Modelagem
@@ -234,6 +236,8 @@
   <summary>Desenvolvimento Artistico</summary>
 
   #### Moodboard
+
+  ![alt text](https://github.com/GabriBerp/OBLYSS/blob/main/Documenta%C3%A7%C3%A3o/Character%20Design/Personagens_Principais/Conhecimento/Moodboard.png)
 
   #### Rascunhos
 
