@@ -85,7 +85,7 @@
 
   #### Moodboard
   
-  ![alt text](Personagens_Principais/Entidade/Moodboard.png)
+  ![alt text](https://github.com/GabriBerp/OBLYSS/blob/main/Documenta%C3%A7%C3%A3o/Character%20Design/Personagens_Principais/Entidade/Moodboard.png)
 
   #### Rascunhos
 
